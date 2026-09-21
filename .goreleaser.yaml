@@ -59,6 +59,9 @@ aurs:
     maintainers:
       - "Danielle McCool <d.m.mccool@uu.nl>"
     license: "Apache-2.0"
+    # An unset secret reaches goreleaser as an empty string and the push is skipped
+    # ("private_key is empty"); the release still succeeds. release.yml must keep
+    # defining the variable: an undefined .Env key is a template error.
     private_key: "{{ .Env.AUR_SSH_PRIVATE_KEY }}"
     git_url: "ssh://aur@aur.archlinux.org/adg-bin.git"
     # Prerelease tags never reach the AUR: pacman ranks 4.0.0_rc1 above 4.0.0, so an
