@@ -7,7 +7,7 @@ They ship as **one version-locked bundle**, and a single git tag drives everythi
 
 One tag `vX.Y.Z` simultaneously fixes:
 
-1. the GitHub Release assets — `adg_<os>_<arch>[.exe]` + `checksums.txt` (built by `.goreleaser.yaml`);
+1. the GitHub Release assets — the raw binaries, the tar.gz archives, and `checksums.txt` (built by `.goreleaser.yaml`);
 2. the CLI's `adg --version` (the tag, minus the `v`, injected via `-ldflags`);
 3. `tools/adr-plugin/.claude-plugin/plugin.json` `version` (**must** equal the tag minus `v`);
 4. what consumers receive — the d3i-skills marketplace pins the plugin at `ref: main`, so
@@ -28,10 +28,16 @@ mismatch is live the instant it merges, so the tag and Release must land immedia
    leave an unreleased version on `main` — every governed session is told to upgrade to a version no
    package manager can serve
    ([ADR-0013](docs/decisions/0013-the-marketplace-tracks-main-so-a-plugin-json-version-bump-must-ship-with-its-tag-and-release.md)).
-3. The `release` workflow runs goreleaser and publishes the GitHub Release with the six
-   `adg_<os>_<arch>` assets + `checksums.txt`.
-4. Verify: the Release page lists all assets, and a downloaded asset prints `X.Y.Z`:
-   `./adg_linux_amd64 --version`.
+3. The `release` workflow runs goreleaser and npm, publishing all four outputs: the GitHub
+   Release (the six raw `adg_<os>_<arch>[.exe]` binaries, six `adg_<version>_<os>_<arch>.tar.gz`
+   archives, and `checksums.txt` — 13 assets); the AUR package `adg-bin` (skipped for prerelease
+   tags); and the seven npm packages (`@d3i-infra/adg` plus six platform packages, dist-tag `next`
+   for prereleases, `latest` otherwise).
+4. Verify: the Release page lists all 13 assets, and a downloaded asset prints `X.Y.Z`:
+   `./adg_linux_amd64 --version`; `npm view @d3i-infra/adg dist-tags --json` shows the expected
+   tag; and `curl -fsS "https://aur.archlinux.org/rpc/v5/info?arg[]=adg-bin" | python3 -c
+   'import json,sys;print(json.load(sys.stdin)["results"][0]["Version"])'` prints `X.Y.Z` (skip
+   for a prerelease tag, which the AUR never receives).
 
 There is no ref-bump step: the marketplace's `write-adr` entry pins `ref: main`, so consumers get
 `X.Y.Z` the moment step 1 merges — which is exactly why step 2 must follow immediately.

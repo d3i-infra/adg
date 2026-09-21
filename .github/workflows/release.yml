@@ -35,8 +35,8 @@ jobs:
         with:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
-      - name: Current npm (trusted publishing needs 11.5.1+)
-        run: npm install -g npm@latest && npm --version
+      - name: Current npm (floor is the trusted-publishing minimum, 11.5.1)
+        run: npm install -g 'npm@^11.5.1' && npm --version
       - name: Assemble npm packages
         run: node scripts/npm/build.mjs dist dist/npm
       - name: Publish npm packages
@@ -53,7 +53,7 @@ jobs:
           if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
             unset NODE_AUTH_TOKEN
             # setup-node wrote an _authToken=${NODE_AUTH_TOKEN} line; remove it so npm uses OIDC.
-            sed -i '/_authToken/d' "${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+            f="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"; [ -f "$f" ] && sed -i '/_authToken/d' "$f"
           fi
           version=$(jq -r .version dist/metadata.json)
           tag=latest

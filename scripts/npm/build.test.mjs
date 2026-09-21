@@ -82,6 +82,7 @@ test("build writes seven packages with executable binaries", () => {
     const dir = join(out, p.name.split("/")[1]);
     assert.ok(existsSync(join(dir, "package.json")), `${dir}/package.json`);
     assert.ok(existsSync(join(dir, "LICENSE")));
+    assert.ok(existsSync(join(dir, "README.md")), `${dir}/README.md`);
     assert.ok(statSync(join(dir, "bin", `adg${p.ext}`)).mode & 0o111, "binary is executable");
   }
   assert.ok(existsSync(join(out, "adg", "bin", "adg.cjs")));

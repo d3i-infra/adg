@@ -90,6 +90,8 @@ export function build(distDir, outDir) {
     chmodSync(target, 0o755);
     copyFileSync(license, join(dir, "LICENSE"));
     writeJson(join(dir, "package.json"), platformManifest(p));
+    writeFileSync(join(dir, "README.md"),
+      `# ${p.name}\n\nThe ${p.os}-${p.cpu} binary for [@d3i-infra/adg](https://www.npmjs.com/package/@d3i-infra/adg). Install that package, not this one; npm selects this one automatically for your platform.\n`);
   }
 
   const main = join(outDir, "adg");

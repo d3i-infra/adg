@@ -61,6 +61,9 @@ aurs:
     license: "Apache-2.0"
     private_key: "{{ .Env.AUR_SSH_PRIVATE_KEY }}"
     git_url: "ssh://aur@aur.archlinux.org/adg-bin.git"
+    # Prerelease tags never reach the AUR: pacman ranks 4.0.0_rc1 above 4.0.0, so an
+    # rc would stick anyone who installed it. Same policy as the Release and npm.
+    skip_upload: auto
     commit_msg_template: "adg {{ .Tag }}"
     package: |-
       install -Dm755 "./adg" "${pkgdir}/usr/bin/adg"
