@@ -29,7 +29,7 @@ fi
 # Version check.
 # Install advice, one line per platform. The plugin no longer downloads adg itself:
 # adg is a system dependency installed through a package manager (see the repo README).
-install='pnpm add -g @d3i-infra/adg (or: npm install -g @d3i-infra/adg) · Arch: yay -S adg-bin · Go: go install github.com/d3i-infra/adg@latest · no package manager: curl -fsSL https://raw.githubusercontent.com/d3i-infra/adg/main/install.sh | sh'
+install='pnpm add -g @d3i-infra/adg (or: npm install -g @d3i-infra/adg) · Arch: yay -S adg-bin (not yet available) · Go: go install github.com/d3i-infra/adg@latest · no package manager: curl -fsSL https://raw.githubusercontent.com/d3i-infra/adg/main/install.sh | sh'
 root="${CLAUDE_PLUGIN_ROOT:-}"
 need=""
 if [ -n "$root" ] && [ -f "$root/.claude-plugin/plugin.json" ]; then

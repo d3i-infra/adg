@@ -14,6 +14,7 @@ fail() { echo "FAIL: $1" >&2; echo "$out" >&2; exit 1; }
 printf '%s' "$out" | grep -q '"systemMessage"' || fail "missing adg should produce the JSON envelope"
 printf '%s' "$out" | grep -q 'pnpm add -g @d3i-infra/adg' || fail "no npm line"
 printf '%s' "$out" | grep -q 'adg-bin' || fail "no AUR line"
+printf '%s' "$out" | grep -q 'adg-bin (not yet available)' || fail "AUR line must say it is not yet available"
 printf '%s' "$out" | grep -q 'raw.githubusercontent.com/d3i-infra/adg/main/install.sh' || fail "no fallback line"
 printf '%s' "$out" | grep -q 'rides along' && fail "wrapper wording must be gone"
 printf '%s' "$out" | python3 -c 'import json,sys; json.loads(sys.stdin.read())' || fail "output is not valid JSON"

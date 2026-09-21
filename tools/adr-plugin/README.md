@@ -45,7 +45,7 @@ Either add this repo as a marketplace directly:
 
 The skills and the bundled hooks call the `adg` CLI as a bare command. `adg` is a **system
 dependency**: install it once with your package manager (`pnpm add -g @d3i-infra/adg`, or
-`yay -S adg-bin` on Arch, or `go install github.com/d3i-infra/adg@latest`; the repo README has the
+`yay -S adg-bin` on Arch (not yet available), or `go install github.com/d3i-infra/adg@latest`; the repo README has the
 full table). When it is missing, the
 bundled hooks **fail loudly** (an `adg: command not found` hook error at session start and on tool
 calls) — deliberate, so the governance never degrades silently — and the SessionStart hook turns that

@@ -1,3 +1,5 @@
+<!-- This file is derived from github.com/adr/ad-guidance-tool (Apache-2.0) and has been modified by the adg authors; see Acknowledgements below. -->
+
 # ADG — Architectural Decision Guidance
 
 A command-line tool for managing **Architectural Decision Records (ADRs)** and compiling them into
@@ -25,7 +27,7 @@ everything else:
 | Platform | Install | Upgrade |
 |---|---|---|
 | macOS, Linux, Windows (Node + pnpm) | `pnpm add -g @d3i-infra/adg` (or `npm install -g @d3i-infra/adg`) | `pnpm add -g @d3i-infra/adg@latest` |
-| Arch Linux (AUR) | `yay -S adg-bin` (or `paru -S adg-bin`) | with your usual `-Syu` |
+| Arch Linux (AUR) | `yay -S adg-bin` (or `paru -S adg-bin`) — **not yet available**: AUR account registration is closed, use the first row until it reopens | with your usual `-Syu` |
 | Any Go toolchain | `go install github.com/d3i-infra/adg@latest` | same command |
 
 A pnpm project can also pin `adg` for the whole team with `pnpm add -D -E @d3i-infra/adg` and call
@@ -216,7 +218,8 @@ Schellander and collaborators at the [Eastern Switzerland University of Applied 
 released under the Apache License 2.0. Their CLI skeleton (cobra root command, the
 `internal/adapter/command` layout) and the idea of a curated *model* of recurring architectural
 decisions formed the basis of this tool; the record format, routing, brief compilation, hooks, and
-plugin were built here. The original theses:
+plugin were built here. Each modified file retained from upstream carries a header saying so;
+`go.sum`, which has no comment syntax, is the exception. The original theses:
 
 - [Concept Alternatives for the Management of Architectural Decisions in Clean Architectures](https://eprints.ost.ch/id/eprint/1280/1/MSECS-FS24-CleanArchitectureDecisionsConceptsRS.pdf)
 - [A Command-Line Tool for Managing Recurring Architectural Decisions](https://eprints.ost.ch/id/eprint/1287/1/PA2-Raphael-Schellander.pdf)

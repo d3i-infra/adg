@@ -1,3 +1,6 @@
+// This file is derived from github.com/adr/ad-guidance-tool (Apache-2.0) and has
+// been modified by the adg authors; see the Acknowledgements section of README.md.
+
 package commands
 
 import (
