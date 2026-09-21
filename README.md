@@ -1,3 +1,5 @@
+<!-- This file is derived from github.com/adr/ad-guidance-tool (Apache-2.0) and has been modified by the adg authors; see Acknowledgements below. -->
+
 # ADG — Architectural Decision Guidance
 
 A command-line tool for managing **Architectural Decision Records (ADRs)** and compiling them into
@@ -216,7 +218,8 @@ Schellander and collaborators at the [Eastern Switzerland University of Applied 
 released under the Apache License 2.0. Their CLI skeleton (cobra root command, the
 `internal/adapter/command` layout) and the idea of a curated *model* of recurring architectural
 decisions formed the basis of this tool; the record format, routing, brief compilation, hooks, and
-plugin were built here. The original theses:
+plugin were built here. Each modified file retained from upstream carries a header saying so;
+`go.sum`, which has no comment syntax, is the exception. The original theses:
 
 - [Concept Alternatives for the Management of Architectural Decisions in Clean Architectures](https://eprints.ost.ch/id/eprint/1280/1/MSECS-FS24-CleanArchitectureDecisionsConceptsRS.pdf)
 - [A Command-Line Tool for Managing Recurring Architectural Decisions](https://eprints.ost.ch/id/eprint/1287/1/PA2-Raphael-Schellander.pdf)
