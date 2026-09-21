@@ -9,6 +9,12 @@ version: 2
 
 project_name: adg
 
+# A release tag and its release candidates can sit on the same commit (v4.0.0-rc2 and
+# v4.0.0). Plain version sort ranks "v4.0.0-rc2" above "v4.0.0", so goreleaser would
+# release the rc again. With this suffix the prereleases sort below the release.
+git:
+  prerelease_suffix: "-"
+
 builds:
   - id: adg
     binary: adg
