@@ -2,7 +2,7 @@
 status: accepted
 date: "2026-06-29"
 category: CLI conventions
-source: docs/fork-design/0004-route-machine-values-to-stdout-and-human-status-to-stderr.md
+source: the MADR-era design records, removed 2026-09 (git history before v4.0.0, docs/fork-design/)
 priority: invariant
 applies_to:
     - cmd/**/*.go

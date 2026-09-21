@@ -2,7 +2,7 @@
 status: accepted
 date: "2026-06-29"
 category: Decision model
-source: docs/fork-design/0005-make-supersede-a-first-class-bidirectional-command.md
+source: the MADR-era design records, removed 2026-09 (git history before v4.0.0, docs/fork-design/)
 priority: default
 applies_to:
     - internal/domain/decision/lean/validate.go

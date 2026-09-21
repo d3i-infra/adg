@@ -13,24 +13,9 @@ Lean is the sole user-facing format
 ([ADR-0016](./docs/decisions/0016-lean-is-the-sole-user-facing-adg-adr-format-madr-is-shared-parsing-plumbing.md));
 the MADR authoring lifecycle was retired in v2.0.0.
 
-This is a fork of [adr/ad-guidance-tool](https://github.com/adr/ad-guidance-tool) — see
-[Fork rationale](#fork-rationale) for what differs.
-
-## Fork rationale
-
-The upstream tool managed a single custom-Markdown format with HTML anchor tags and a sidecar
-`index.yaml`. This fork made two moves:
-
-1. **MADR on disk, no index** *(historical)*. Files became ordinary MADR records round-tripping
-   through `parse → render`, with metadata in YAML frontmatter and the ADR files as the only source
-   of truth (`index.yaml` and `adg rebuild` were dropped). Those departures are recorded in
-   [`docs/fork-design/`](./docs/fork-design/). The MADR *authoring lifecycle* has since been retired;
-   its frontmatter/file-split parsing survives as the plumbing under lean records.
-
-2. **From ADR management to architecture-context compilation.** The *lean* format optimizes for
-   agent consumption: small Decision/Guidance records with glob-based routing that `adg` compiles into a
-   per-change brief and injects via a Claude Code hook. The tool's own current decisions live in
-   [`docs/decisions/`](./docs/decisions/) — themselves lean records.
+`adg` began as a derivative of the [adr/ad-guidance-tool](https://github.com/adr/ad-guidance-tool) CLI
+and has since been rebuilt around lean records and compiled briefs — see
+[Acknowledgements](#acknowledgements).
 
 ## Install
 
@@ -211,8 +196,7 @@ Settings are advisory and fail-open, and they never change what a compiled brief
 `adg` governs itself. Its current architectural decisions are lean records in
 [`docs/decisions/`](./docs/decisions/) (the routing kernel, the canonical renderer, single-format
 consolidation, enforcement tiers, round-trip stability, relationship types, stdout/stderr, no-index, …).
-The earlier MADR-fork decisions are in [`docs/fork-design/`](./docs/fork-design/), and a worked lean
-example model is in [`docs/lean-example/`](./docs/lean-example/).
+A worked lean example model is in [`docs/lean-example/`](./docs/lean-example/).
 
 ## Contributing
 
@@ -225,14 +209,19 @@ Business logic lives in the domain (`internal/domain/`); commands are thin cobra
    to stderr.
 3. Cover with unit tests, and run `go test ./...` before pushing.
 
-## References
+## Acknowledgements
 
-- [MADR](https://adr.github.io/madr/) — the durable ADR format whose frontmatter/file conventions this
-  fork's parsing plumbing descends from.
-- Upstream tool: [adr/ad-guidance-tool](https://github.com/adr/ad-guidance-tool).
-- Original theses behind the upstream tool:
-  - [Concept Alternatives for the Management of Architectural Decisions in Clean Architectures](https://eprints.ost.ch/id/eprint/1280/1/MSECS-FS24-CleanArchitectureDecisionsConceptsRS.pdf)
-  - [A Command-Line Tool for Managing Recurring Architectural Decisions](https://eprints.ost.ch/id/eprint/1287/1/PA2-Raphael-Schellander.pdf)
+`adg` is derived from [adr/ad-guidance-tool](https://github.com/adr/ad-guidance-tool) by Raphael
+Schellander and collaborators at the [Eastern Switzerland University of Applied Sciences](https://www.ost.ch/en/),
+released under the Apache License 2.0. Their CLI skeleton (cobra root command, the
+`internal/adapter/command` layout) and the idea of a curated *model* of recurring architectural
+decisions formed the basis of this tool; the record format, routing, brief compilation, hooks, and
+plugin were built here. The original theses:
+
+- [Concept Alternatives for the Management of Architectural Decisions in Clean Architectures](https://eprints.ost.ch/id/eprint/1280/1/MSECS-FS24-CleanArchitectureDecisionsConceptsRS.pdf)
+- [A Command-Line Tool for Managing Recurring Architectural Decisions](https://eprints.ost.ch/id/eprint/1287/1/PA2-Raphael-Schellander.pdf)
+
+The lean record's frontmatter and file conventions descend from [MADR](https://adr.github.io/madr/).
 
 ## License
 

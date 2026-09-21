@@ -2,7 +2,7 @@
 status: accepted
 date: "2026-06-29"
 category: ADR formats
-source: fork-design 0003 (comments regeneration) and 0007 (H1 title injection)
+source: the MADR-era design records, removed 2026-09 (git history before v4.0.0, docs/fork-design/)
 priority: invariant
 applies_to:
     - internal/domain/decision/madr/parser.go

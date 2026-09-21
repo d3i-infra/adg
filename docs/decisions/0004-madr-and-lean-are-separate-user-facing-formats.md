@@ -2,7 +2,7 @@
 status: superseded by ADR-0016
 date: "2026-06-29"
 category: ADR formats
-source: docs/fork-design/0001-adopt-madr-as-the-on-disk-adr-format.md
+source: the MADR-era design records, removed 2026-09 (git history before v4.0.0, docs/fork-design/)
 priority: default
 applies_to:
     - internal/domain/decision/madr/**/*.go
