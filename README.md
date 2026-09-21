@@ -34,15 +34,29 @@ The upstream tool managed a single custom-Markdown format with HTML anchor tags 
 
 ## Install
 
-**Prebuilt binary (recommended).** Install the latest release into `~/.local/bin` — no Go toolchain:
+**Package manager (recommended).** One command, then `adg` is on your `PATH` and upgrades with
+everything else:
+
+| Platform | Install | Upgrade |
+|---|---|---|
+| macOS, Linux, Windows (Node + pnpm) | `pnpm add -g @d3i-infra/adg` (or `npm install -g @d3i-infra/adg`) | `pnpm add -g @d3i-infra/adg@latest` |
+| Arch Linux (AUR) | `yay -S adg-bin` (or `paru -S adg-bin`) | with your usual `-Syu` |
+| Any Go toolchain | `go install github.com/d3i-infra/adg@latest` | same command |
+
+A pnpm project can also pin `adg` for the whole team with `pnpm add -D -E @d3i-infra/adg` and call
+it as `pnpm exec adg …` (this is how the governed repos' CI runs it). The Claude Code hooks call
+`adg` bare, outside `node_modules/.bin`, so the global install above is still needed on each
+developer machine.
+
+**Prebuilt binary (no package manager).** Installs the latest release into `~/.local/bin`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/daniellemccool/ad-guidance-tool/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/d3i-infra/adg/main/install.sh | sh
 ```
 
-Pin a version with `ADG_VERSION=v3.0.0` or change the location with `ADG_INSTALL_DIR`. Binaries for
+Pin a version with `ADG_VERSION=v4.0.0` or change the location with `ADG_INSTALL_DIR`. Binaries for
 macOS/Linux/Windows (amd64/arm64) are on the
-[Releases](https://github.com/daniellemccool/ad-guidance-tool/releases) page.
+[Releases](https://github.com/d3i-infra/adg/releases) page.
 
 **From source** (needs Go 1.24+):
 

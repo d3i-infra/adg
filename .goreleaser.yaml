@@ -51,3 +51,18 @@ release:
   draft: false
   # Tags like v1.1.0-rc1 / v1.0.1-dev are published as prereleases automatically.
   prerelease: auto
+
+aurs:
+  - name: adg-bin
+    ids: [adg-archive]
+    homepage: "https://github.com/d3i-infra/adg"
+    description: "Compile Architectural Decision Records into per-change architecture briefs for coding agents"
+    maintainers:
+      - "Danielle McCool <d.m.mccool@uu.nl>"
+    license: "Apache-2.0"
+    private_key: "{{ .Env.AUR_SSH_PRIVATE_KEY }}"
+    git_url: "ssh://aur@aur.archlinux.org/adg-bin.git"
+    commit_msg_template: "adg {{ .Tag }}"
+    package: |-
+      install -Dm755 "./adg" "${pkgdir}/usr/bin/adg"
+      install -Dm644 "./LICENSE" "${pkgdir}/usr/share/licenses/adg-bin/LICENSE"
