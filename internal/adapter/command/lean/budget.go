@@ -2,7 +2,7 @@ package lean
 
 import (
 	"fmt"
-	leandomain "github.com/d3i-infra/adg/internal/domain/decision/lean"
+	leandomain "github.com/d3i-infra/adg/v4/internal/domain/decision/lean"
 	"os"
 	"path/filepath"
 

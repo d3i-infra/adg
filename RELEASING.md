@@ -23,7 +23,9 @@ mismatch is live the instant it merges, so the tag and Release must land immedia
 ## Cutting a release
 
 1. In your change PR, bump `tools/adr-plugin/.claude-plugin/plugin.json` `version` → `X.Y.Z`, then
-   merge to `main`. Because the marketplace tracks `main`, the merge is the rollout.
+   merge to `main`. Because the marketplace tracks `main`, the merge is the rollout. A new MAJOR
+   version also needs the Go module path moved to `/vN` (go.mod, every import, the `-X` symbol in
+   `.goreleaser.yaml`); `TestModuleMajorMatchesPluginVersion` fails until it is.
 2. **Immediately** tag the merge commit and push: `git tag vX.Y.Z && git push origin vX.Y.Z`. Don't
    leave an unreleased version on `main` — every governed session is told to upgrade to a version no
    package manager can serve
@@ -94,5 +96,5 @@ bump on `main` without an immediate tag + Release breaks installs
 
 ## Local verification (no real release)
 
-- Version wiring: `go build -ldflags "-X github.com/d3i-infra/adg/cmd.version=v9.9.9-test" -o /tmp/adg . && /tmp/adg --version`
+- Version wiring: `go build -ldflags "-X github.com/d3i-infra/adg/v4/cmd.version=v9.9.9-test" -o /tmp/adg . && /tmp/adg --version`
 - Release config: `goreleaser check` then `goreleaser release --snapshot --clean` (inspect `dist/`).

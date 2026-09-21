@@ -29,7 +29,7 @@ fi
 # Version check.
 # Install advice, one line per platform. The plugin no longer downloads adg itself:
 # adg is a system dependency installed through a package manager (see the repo README).
-install='pnpm add -g @d3i-infra/adg (or: npm install -g @d3i-infra/adg) · Arch: yay -S adg-bin (not yet available) · Go: go install github.com/d3i-infra/adg@latest · no package manager: curl -fsSL https://raw.githubusercontent.com/d3i-infra/adg/main/install.sh | sh'
+install='pnpm add -g @d3i-infra/adg (or: npm install -g @d3i-infra/adg) · Arch: yay -S adg-bin (not yet available) · Go: go install github.com/d3i-infra/adg/v4@latest · no package manager: curl -fsSL https://raw.githubusercontent.com/d3i-infra/adg/main/install.sh | sh'
 root="${CLAUDE_PLUGIN_ROOT:-}"
 need=""
 if [ -n "$root" ] && [ -f "$root/.claude-plugin/plugin.json" ]; then
@@ -47,9 +47,9 @@ elif [ -n "$need" ] && [ "$have" != "$need" ]; then
     have_core=${have%%-*}; need_core=${need%%-*}
     older=$(printf '%s\n%s\n' "$have_core" "$need_core" | sort -V | head -1)
     if [ "$older" = "$have_core" ] && { [ "$have_core" != "$need_core" ] || [ "$have" != "$have_core" ]; }; then
-        msg="adg is v$have but the write-adr plugin ships for v$need — the governance hooks misbehave on the old version. Upgrade with your package manager (pnpm add -g @d3i-infra/adg@latest · yay -Syu · go install github.com/d3i-infra/adg@latest)."
+        msg="adg is v$have but the write-adr plugin ships for v$need — the governance hooks misbehave on the old version. Upgrade with your package manager (pnpm add -g @d3i-infra/adg@latest · yay -Syu · go install github.com/d3i-infra/adg/v4@latest)."
         ctx="$ctx
-NOTE: the system \`adg\` is v$have but this plugin ships for v$need — the governance hooks misbehave on the old version. The user has been shown the upgrade commands (pnpm add -g @d3i-infra/adg@latest · yay -Syu · go install github.com/d3i-infra/adg@latest)."
+NOTE: the system \`adg\` is v$have but this plugin ships for v$need — the governance hooks misbehave on the old version. The user has been shown the upgrade commands (pnpm add -g @d3i-infra/adg@latest · yay -Syu · go install github.com/d3i-infra/adg/v4@latest)."
     fi
 fi
 

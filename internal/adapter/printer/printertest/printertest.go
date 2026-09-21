@@ -6,7 +6,7 @@ package printertest
 import (
 	"bytes"
 
-	printer "github.com/d3i-infra/adg/internal/adapter/printer"
+	printer "github.com/d3i-infra/adg/v4/internal/adapter/printer"
 )
 
 // Capture builds a Streams writing to fresh buffers. The returned

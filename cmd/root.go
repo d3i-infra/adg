@@ -4,8 +4,10 @@
 package cmd
 
 import (
-	printer "github.com/d3i-infra/adg/internal/adapter/printer"
+	printer "github.com/d3i-infra/adg/v4/internal/adapter/printer"
 	"os"
+	"runtime/debug"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -19,11 +21,31 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-// version is the adg version string. It defaults to "dev" for source builds and
-// is overridden at release time via -ldflags "-X github.com/d3i-infra/adg/cmd.version=<tag>" (wired by
-// .goreleaser.yaml). init() reads it into rootCmd.Version, so the value injected
-// at link time is what `adg --version` prints.
+// version is the adg version string. goreleaser overrides it at release time via
+// -ldflags "-X github.com/d3i-infra/adg/v4/cmd.version=<tag>" (wired by .goreleaser.yaml).
+// A `go install github.com/d3i-infra/adg/v4@<version>` build gets no ldflags, so
+// resolveVersion falls back to the module version Go records in the build info.
 var version = "dev"
+
+// resolveVersion picks what `adg --version` prints: the linked version when there is
+// one, else the main module's version without its leading "v", else "dev". A plain
+// `go build` in a checkout reports "(devel)" and stays "dev".
+func resolveVersion(linked, mainVersion string) string {
+	if linked != "dev" {
+		return linked
+	}
+	if mainVersion == "" || mainVersion == "(devel)" {
+		return "dev"
+	}
+	return strings.TrimPrefix(mainVersion, "v")
+}
+
+func buildInfoVersion() string {
+	if info, ok := debug.ReadBuildInfo(); ok {
+		return info.Main.Version
+	}
+	return ""
+}
 
 // Quiet is bound to the persistent --quiet flag. Presenters read it
 // through Streams.Quiet (pointer) so the parsed value is visible at
@@ -31,7 +53,7 @@ var version = "dev"
 var Quiet bool
 
 func init() {
-	rootCmd.Version = version
+	rootCmd.Version = resolveVersion(version, buildInfoVersion())
 	rootCmd.SetVersionTemplate("adg {{.Version}}\n")
 	rootCmd.PersistentFlags().BoolVar(&Quiet, "quiet", false,
 		"Suppress success status messages on stderr; machine values on stdout and errors still print")

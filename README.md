@@ -28,7 +28,7 @@ everything else:
 |---|---|---|
 | macOS, Linux, Windows (Node + pnpm) | `pnpm add -g @d3i-infra/adg` (or `npm install -g @d3i-infra/adg`) | `pnpm add -g @d3i-infra/adg@latest` |
 | Arch Linux (AUR) | `yay -S adg-bin` (or `paru -S adg-bin`) — **not yet available**: AUR account registration is closed, use the first row until it reopens | with your usual `-Syu` |
-| Any Go toolchain | `go install github.com/d3i-infra/adg@latest` | same command |
+| Any Go toolchain | `go install github.com/d3i-infra/adg/v4@latest` | same command |
 
 A pnpm project can also pin `adg` for the whole team with `pnpm add -D -E @d3i-infra/adg` and call
 it as `pnpm exec adg …` (this is how the governed repos' CI runs it). The Claude Code hooks call

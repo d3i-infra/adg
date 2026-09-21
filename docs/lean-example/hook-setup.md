@@ -23,7 +23,7 @@ The blocks are the commit `forbids` gate, the ADR-creation guard, and a judge-de
 The hooks invoke `adg` as a bare command, so it must be on your `PATH` (a project-local
 `node_modules/.bin/adg` is not enough). Install it with your package manager:
 `pnpm add -g @d3i-infra/adg` (macOS, Linux, Windows), `yay -S adg-bin` (Arch; not yet available), or
-`go install github.com/d3i-infra/adg@latest`. The full table is in the
+`go install github.com/d3i-infra/adg/v4@latest`. The full table is in the
 [repo README](../../README.md#install).
 
 From source: `go install .`. The hook entry point is `adg lean brief --hook` (with `--whole` / `--invariants`

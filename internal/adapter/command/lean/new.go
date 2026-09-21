@@ -2,10 +2,10 @@ package lean
 
 import (
 	"fmt"
-	util "github.com/d3i-infra/adg/internal/adapter/command"
-	"github.com/d3i-infra/adg/internal/domain/decision"
-	leandomain "github.com/d3i-infra/adg/internal/domain/decision/lean"
-	"github.com/d3i-infra/adg/internal/domain/decision/madr"
+	util "github.com/d3i-infra/adg/v4/internal/adapter/command"
+	"github.com/d3i-infra/adg/v4/internal/domain/decision"
+	leandomain "github.com/d3i-infra/adg/v4/internal/domain/decision/lean"
+	"github.com/d3i-infra/adg/v4/internal/domain/decision/madr"
 	"io"
 	"os"
 	"path/filepath"

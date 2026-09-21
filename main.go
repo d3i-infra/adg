@@ -6,7 +6,7 @@ package main
 import (
 	"os"
 
-	"github.com/d3i-infra/adg/cmd"
+	"github.com/d3i-infra/adg/v4/cmd"
 )
 
 func main() {
