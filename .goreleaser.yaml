@@ -19,7 +19,7 @@ builds:
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     ldflags:
-      # Inject the tag (without the leading v) as adg/cmd.version so `adg --version`
+      # Inject the tag (without the leading v) as github.com/d3i-infra/adg/cmd.version so `adg --version`
       # matches plugin.json's version — the lock the wrapper relies on.
       - -s -w -X github.com/d3i-infra/adg/cmd.version={{ .Version }}
 
