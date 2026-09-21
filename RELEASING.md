@@ -13,11 +13,11 @@ One tag `vX.Y.Z` simultaneously fixes:
 4. what consumers receive — the d3i-skills marketplace pins the plugin at `ref: main`, so
    **merging to `main` is the rollout** (there is no tag-pinned ref to bump separately).
 
-The plugin's `bin/adg` wrapper reads its version out of `plugin.json` and downloads
-`adg vX.Y.Z` from the Release — so **`plugin.json` version == release tag minus `v`** is a hard
-requirement, not a convention. Mismatch ⇒ the wrapper's first download 404s — and because the
-marketplace tracks `main`, that mismatch is live to everyone the instant it merges, so the tag and
-Release must land immediately after the bump
+The plugin's SessionStart hook compares the installed `adg --version` to `plugin.json` and tells
+every consumer to upgrade when they differ — so **`plugin.json` version == release tag minus `v`**
+is a hard requirement, not a convention. Mismatch ⇒ every session in every governed repo is told
+to upgrade to a version no package manager has, and because the marketplace tracks `main`, that
+mismatch is live the instant it merges, so the tag and Release must land immediately after the bump
 ([ADR-0013](docs/decisions/0013-the-marketplace-tracks-main-so-a-plugin-json-version-bump-must-ship-with-its-tag-and-release.md)).
 
 ## Cutting a release
@@ -37,10 +37,9 @@ There is no ref-bump step: the marketplace's `write-adr` entry pins `ref: main`,
 
 ## How consumers receive it
 
-- **Plugin skills:** the plugin's `bin/adg` is auto-added to PATH; on first call it lazily downloads
-  the matching `adg vX.Y.Z` into `${CLAUDE_PLUGIN_DATA}` (cached, persists across updates).
-- **Governed-repo hooks** (PreToolUse/Stop, the git pre-commit hook, the `adr` wrapper): these run
-  outside the plugin's PATH and need a system `adg` — install with `install.sh` (see README).
+- **Everyone:** `adg` is installed through a package manager (see "Packagers" below) or `install.sh`.
+  The plugin ships no binary. Its skills, its bundled hooks, the copied-out git pre-commit hook, and
+  CI all call the same system `adg`.
 
 ## Packagers
 

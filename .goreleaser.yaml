@@ -1,8 +1,7 @@
 # goreleaser v2 — builds the adg CLI and publishes prebuilt binaries to GitHub
 # Releases on every `v*` tag (driven by .github/workflows/release.yml).
 #
-# The write-adr plugin's bin/adg wrapper and install.sh download these assets, so
-# the resulting asset names are a CONTRACT they depend on:
+# install.sh downloads these assets, so the resulting asset names are a CONTRACT it depends on:
 #   adg_<os>_<arch>      (linux/darwin)   e.g. adg_darwin_arm64
 #   adg_<os>_<arch>.exe  (windows)        e.g. adg_windows_amd64.exe
 #   checksums.txt        (sha256 of every asset)
@@ -20,7 +19,7 @@ builds:
     goarch: [amd64, arm64]
     ldflags:
       # Inject the tag (without the leading v) as github.com/d3i-infra/adg/cmd.version so `adg --version`
-      # matches plugin.json's version — the lock the wrapper relies on.
+      # matches plugin.json's version — the lock the session-start check relies on.
       - -s -w -X github.com/d3i-infra/adg/cmd.version={{ .Version }}
 
 archives:

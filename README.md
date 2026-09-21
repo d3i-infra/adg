@@ -163,11 +163,11 @@ lockstep. It provides three skills — one for *authoring*, one for
 /plugin marketplace add daniellemccool/ad-guidance-tool
 ```
 
-The skills call `adg`, and it **rides along**: the plugin ships a `bin/adg` wrapper that Claude Code
-puts on `PATH` while the plugin is enabled, fetching the prebuilt CLI that matches the plugin's version
-on first use (no Go toolchain needed). The `d3i-skills` marketplace **lists** this plugin via a
-`git-subdir` source pinned to a release tag — a reference to this repo, which stays the canonical
-source. (Governed-repo hooks run outside the plugin's PATH and need a system `adg` — see [Install](#install).)
+The skills and hooks call `adg` as a bare command, so **install it first** (see [Install](#install)); the
+plugin does not bundle or download it. The `d3i-skills` marketplace **lists** this plugin via a
+`git-subdir` source pinned to `main` — a reference to this repo, which stays the canonical source. At
+session start the plugin checks that the installed `adg` matches the version it ships for and prints
+the install or upgrade command for your platform when it does not.
 
 ---
 

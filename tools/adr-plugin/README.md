@@ -43,22 +43,15 @@ Either add this repo as a marketplace directly:
 …or install via a marketplace that references it with a `git-subdir` source pointing at
 `tools/adr-plugin` (this is how the `d3i-skills` marketplace lists it, pinned to a release tag).
 
-The skills call the `adg` CLI, and it **rides along**: the plugin ships a `bin/adg` wrapper that
-Claude Code puts on `PATH` while the plugin is enabled, and on first use it downloads the prebuilt
-`adg` matching the plugin's version — no Go toolchain, no manual install.
-
-A **system `adg` on `PATH`** is still needed for any `adg` invocation that runs *outside* the skills'
-execution context: the copied-out git hook, governance hooks a target repo wires into its own
-settings, and — as of v1.3.0 — **this plugin's own bundled hooks** (`hooks/hooks.json`, below).
-When it is missing, the bundled hooks **fail loudly** (an `adg: command not found` hook error at
-session start and on tool calls) — deliberate, so the governance never degrades silently — and the
-SessionStart hook turns that noise into instructions: it shows the user this install one-liner
-directly (as a `systemMessage`) and briefs the agent to relay it. Install it once with the
-prebuilt binary:
-
-```
-curl -fsSL https://raw.githubusercontent.com/daniellemccool/ad-guidance-tool/main/install.sh | sh
-```
+The skills and the bundled hooks call the `adg` CLI as a bare command. `adg` is a **system
+dependency**: install it once with your package manager (`pnpm add -g @d3i-infra/adg`, or
+`yay -S adg-bin` on Arch, or `go install github.com/d3i-infra/adg@latest`; the repo README has the
+full table). When it is missing, the
+bundled hooks **fail loudly** (an `adg: command not found` hook error at session start and on tool
+calls) — deliberate, so the governance never degrades silently — and the SessionStart hook turns that
+noise into instructions: it shows the user the install commands directly (as a `systemMessage`) and
+briefs the agent to relay them. When the installed `adg` is older than the version the plugin ships
+for, the same hook prints the upgrade command.
 
 ## Bundled hooks
 

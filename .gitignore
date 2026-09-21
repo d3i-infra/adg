@@ -9,8 +9,6 @@
 *.dylib
 
 # Release artifacts (goreleaser) + the local `go build` binary at repo root.
-# Keep these ANCHORED with a leading slash: an unanchored `adg` or a `bin/` rule
-# would also ignore the committed plugin wrapper at tools/adr-plugin/bin/adg.
 /dist/
 /adg
 
