@@ -37,7 +37,7 @@ tools/adr-plugin/
 Either add this repo as a marketplace directly:
 
 ```
-/plugin marketplace add daniellemccool/ad-guidance-tool
+/plugin marketplace add d3i-infra/adg
 ```
 
 …or install via a marketplace that references it with a `git-subdir` source pointing at

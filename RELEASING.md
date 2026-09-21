@@ -67,7 +67,7 @@ scripts/npm/build.mjs`; tests: `node --test scripts/npm/build.test.mjs`.
 
 ```json
 { "name": "write-adr", "source": "git-subdir",
-  "url": "daniellemccool/ad-guidance-tool", "path": "tools/adr-plugin", "ref": "main" }
+  "url": "d3i-infra/adg", "path": "tools/adr-plugin", "ref": "main" }
 ```
 
 The `ref` is pinned to `main` (not a version tag) on purpose: the plugin tracks the latest release

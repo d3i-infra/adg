@@ -1,5 +1,5 @@
 {
-  "name": "ad-guidance-tool",
+  "name": "adg",
   "description": "Plugins shipped alongside the adg CLI, so guidance tracks the tool in lockstep.",
   "owner": {
     "name": "Danielle McCool"
@@ -10,7 +10,7 @@
       "description": "ADR skills for adg: authoring lean records (write-lean-adr) and obeying lean ADR briefs while changing code (follow-adr-governance).",
       "source": "./tools/adr-plugin",
       "category": "development",
-      "homepage": "https://github.com/daniellemccool/ad-guidance-tool"
+      "homepage": "https://github.com/d3i-infra/adg"
     }
   ]
 }

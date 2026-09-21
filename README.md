@@ -46,8 +46,8 @@ macOS/Linux/Windows (amd64/arm64) are on the
 **From source** (needs Go 1.24+):
 
 ```sh
-git clone https://github.com/daniellemccool/ad-guidance-tool.git
-cd ad-guidance-tool
+git clone https://github.com/d3i-infra/adg.git
+cd adg
 go build           # produces ./adg
 # or:
 go install ./...   # installs to $GOBIN
@@ -145,7 +145,7 @@ lockstep. It provides three skills — one for *authoring*, one for
   (the hook and the brief do the real work).
 
 ```
-/plugin marketplace add daniellemccool/ad-guidance-tool
+/plugin marketplace add d3i-infra/adg
 ```
 
 The skills and hooks call `adg` as a bare command, so **install it first** (see [Install](#install)); the

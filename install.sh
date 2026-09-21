@@ -1,13 +1,13 @@
 #!/usr/bin/env sh
 # install.sh — install the adg CLI from prebuilt GitHub Releases (no Go toolchain).
 #
-#   curl -fsSL https://raw.githubusercontent.com/daniellemccool/ad-guidance-tool/main/install.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/d3i-infra/adg/main/install.sh | sh
 #
 # Installs the latest release into ~/.local/bin. Override the location with
 # ADG_INSTALL_DIR or PREFIX; pin a version with ADG_VERSION=v1.1.0. POSIX sh; needs curl.
 set -eu
 
-REPO="${ADG_REPO:-daniellemccool/ad-guidance-tool}"
+REPO="${ADG_REPO:-d3i-infra/adg}"
 INSTALL_DIR="${ADG_INSTALL_DIR:-${PREFIX:+$PREFIX/bin}}"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 
