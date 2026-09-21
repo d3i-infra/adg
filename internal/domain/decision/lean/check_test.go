@@ -1,7 +1,7 @@
 package lean
 
 import (
-	"adg/internal/domain/decision/madr"
+	"github.com/d3i-infra/adg/internal/domain/decision/madr"
 	"os"
 	"path/filepath"
 	"strings"

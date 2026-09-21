@@ -1,9 +1,9 @@
 package lean
 
 import (
-	util "adg/internal/adapter/command"
-	leandomain "adg/internal/domain/decision/lean"
 	"fmt"
+	util "github.com/d3i-infra/adg/internal/adapter/command"
+	leandomain "github.com/d3i-infra/adg/internal/domain/decision/lean"
 
 	"github.com/spf13/cobra"
 )

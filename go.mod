@@ -1,4 +1,4 @@
-module adg
+module github.com/d3i-infra/adg
 
 go 1.24
 

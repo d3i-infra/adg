@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"adg/cmd"
+	"github.com/d3i-infra/adg/cmd"
 )
 
 func main() {

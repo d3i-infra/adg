@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	leancmd "adg/internal/adapter/command/lean"
+	leancmd "github.com/d3i-infra/adg/internal/adapter/command/lean"
 
 	"github.com/spf13/cobra"
 )

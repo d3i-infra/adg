@@ -56,5 +56,5 @@ bump on `main` without an immediate tag + Release breaks installs
 
 ## Local verification (no real release)
 
-- Version wiring: `go build -ldflags "-X adg/cmd.version=v9.9.9-test" -o /tmp/adg . && /tmp/adg --version`
+- Version wiring: `go build -ldflags "-X github.com/d3i-infra/adg/cmd.version=v9.9.9-test" -o /tmp/adg . && /tmp/adg --version`
 - Release config: `goreleaser check` then `goreleaser release --snapshot --clean` (inspect `dist/`).
