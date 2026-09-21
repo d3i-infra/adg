@@ -1,7 +1,7 @@
 // This file is derived from github.com/adr/ad-guidance-tool (Apache-2.0) and has
 // been modified by the adg authors; see the Acknowledgements section of README.md.
 
-module github.com/d3i-infra/adg
+module github.com/d3i-infra/adg/v4
 
 go 1.24
 

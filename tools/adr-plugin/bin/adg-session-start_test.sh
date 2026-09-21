@@ -15,6 +15,7 @@ printf '%s' "$out" | grep -q '"systemMessage"' || fail "missing adg should produ
 printf '%s' "$out" | grep -q 'pnpm add -g @d3i-infra/adg' || fail "no npm line"
 printf '%s' "$out" | grep -q 'adg-bin' || fail "no AUR line"
 printf '%s' "$out" | grep -q 'adg-bin (not yet available)' || fail "AUR line must say it is not yet available"
+printf '%s' "$out" | grep -q 'go install github.com/d3i-infra/adg/v4@latest' || fail "Go line must use the /v4 module path"
 printf '%s' "$out" | grep -q 'raw.githubusercontent.com/d3i-infra/adg/main/install.sh' || fail "no fallback line"
 printf '%s' "$out" | grep -q 'rides along' && fail "wrapper wording must be gone"
 printf '%s' "$out" | python3 -c 'import json,sys; json.loads(sys.stdin.read())' || fail "output is not valid JSON"

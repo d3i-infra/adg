@@ -2,7 +2,7 @@ package lean
 
 import (
 	"fmt"
-	"github.com/d3i-infra/adg/internal/domain/decision/madr"
+	"github.com/d3i-infra/adg/v4/internal/domain/decision/madr"
 	"strings"
 	"testing"
 )

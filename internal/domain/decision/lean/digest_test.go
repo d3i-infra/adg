@@ -3,7 +3,7 @@ package lean
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/d3i-infra/adg/internal/domain/decision/madr"
+	"github.com/d3i-infra/adg/v4/internal/domain/decision/madr"
 	"strings"
 	"testing"
 	"unicode/utf8"
