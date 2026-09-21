@@ -43,8 +43,10 @@ if [ -z "$have" ]; then
     ctx="$ctx
 NOTE: the \`adg\` CLI these hooks depend on is not on PATH — the governance hooks will keep erroring visibly (\`adg: command not found\`) until it is installed, and nothing is being checked in the meantime. The user has been shown the install commands; if they ask about the hook errors, point them at the line for their platform: $install"
 elif [ -n "$need" ] && [ "$have" != "$need" ]; then
-    older=$(printf '%s\n%s\n' "$have" "$need" | sort -V | head -1)
-    if [ "$older" = "$have" ]; then
+    # Compare version cores; a prerelease (4.0.0-rc1) counts as older than its release (4.0.0).
+    have_core=${have%%-*}; need_core=${need%%-*}
+    older=$(printf '%s\n%s\n' "$have_core" "$need_core" | sort -V | head -1)
+    if [ "$older" = "$have_core" ] && { [ "$have_core" != "$need_core" ] || [ "$have" != "$have_core" ]; }; then
         msg="adg is v$have but the write-adr plugin ships for v$need — the governance hooks misbehave on the old version. Upgrade with your package manager (pnpm add -g @d3i-infra/adg@latest · yay -Syu · go install github.com/d3i-infra/adg@latest)."
         ctx="$ctx
 NOTE: the system \`adg\` is v$have but this plugin ships for v$need — the governance hooks misbehave on the old version. The user has been shown the upgrade commands (pnpm add -g @d3i-infra/adg@latest · yay -Syu · go install github.com/d3i-infra/adg@latest)."

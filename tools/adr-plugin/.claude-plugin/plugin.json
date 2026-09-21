@@ -1,7 +1,7 @@
 {
   "name": "write-adr",
   "version": "4.0.0",
-  "description": "Lean ADR governance for Claude Code, driven by the adg CLI. Two skills — write-lean-adr (author, migrate, review records) and follow-adr-governance (obey injected briefs while changing code) — plus hooks that route architecture decisions across the change lifecycle: a 2 KB session digest at session open, the whole-corpus brief for Plan subagents, file-scoped briefs before edits, a staged-file advisory and a compliance judge at commit, a guard on hand-created records, and an ADR-quality reviewer. Requires the adg CLI installed through a package manager (npm/pnpm, AUR, or go install); a session-start check prints the install or upgrade command. Ships in the adg repo so the guidance tracks the CLI in lockstep.",
+  "description": "Lean ADR governance for Claude Code, driven by the adg CLI. Three skills — using-write-adr (the gateway), write-lean-adr (author, migrate, review records) and follow-adr-governance (obey injected briefs while changing code) — plus hooks that route architecture decisions across the change lifecycle: a 2 KB session digest at session open, the whole-corpus brief for Plan subagents, file-scoped briefs before edits, a staged-file advisory and a compliance judge at commit, a guard on hand-created records, and an ADR-quality reviewer. Requires the adg CLI installed through a package manager (npm/pnpm, AUR, or go install); a session-start check prints the install or upgrade command. Ships in the adg repo so the guidance tracks the CLI in lockstep.",
   "author": {
     "name": "Danielle McCool"
   },

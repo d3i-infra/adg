@@ -149,10 +149,10 @@ lockstep. It provides three skills — one for *authoring*, one for
 ```
 
 The skills and hooks call `adg` as a bare command, so **install it first** (see [Install](#install)); the
-plugin does not bundle or download it. The `d3i-skills` marketplace **lists** this plugin via a
+plugin does not bundle or download it. The `d3i-claude-skills` marketplace **lists** this plugin via a
 `git-subdir` source pinned to `main` — a reference to this repo, which stays the canonical source. At
-session start the plugin checks that the installed `adg` matches the version it ships for and prints
-the install or upgrade command for your platform when it does not.
+session start the plugin checks that the installed `adg` is not older than the version it ships for
+and prints the install or upgrade command for your platform when it is missing or older.
 
 ---
 

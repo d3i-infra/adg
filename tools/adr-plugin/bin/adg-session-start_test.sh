@@ -17,4 +17,30 @@ printf '%s' "$out" | grep -q 'adg-bin' || fail "no AUR line"
 printf '%s' "$out" | grep -q 'raw.githubusercontent.com/d3i-infra/adg/main/install.sh' || fail "no fallback line"
 printf '%s' "$out" | grep -q 'rides along' && fail "wrapper wording must be gone"
 printf '%s' "$out" | python3 -c 'import json,sys; json.loads(sys.stdin.read())' || fail "output is not valid JSON"
+
+# Version-compare cases: plugin.json ships for 4.0.0; an installed prerelease (4.0.0-rc1)
+# must count as older than its release, not newer (GNU sort -V ranks 4.0.0-rc1 after 4.0.0).
+mkdir -p "$tmp/plugin4/.claude-plugin"
+cp "$here/adg-session-start.sh" "$tmp/plugin4/"
+printf '{"name":"write-adr","version":"4.0.0"}\n' > "$tmp/plugin4/.claude-plugin/plugin.json"
+
+run_with_version() {
+    ver="$1"
+    mkdir -p "$tmp/fakebin"
+    printf '#!/bin/sh\necho "adg %s"\n' "$ver" > "$tmp/fakebin/adg"
+    chmod +x "$tmp/fakebin/adg"
+    (cd "$tmp/repo" && PATH="$tmp/fakebin:/usr/bin:/bin" CLAUDE_PLUGIN_ROOT="$tmp/plugin4" sh "$tmp/plugin4/adg-session-start.sh")
+}
+
+out=$(run_with_version "3.9.0")
+printf '%s' "$out" | grep -q '"systemMessage"' || fail "installed 3.9.0 should produce the JSON envelope"
+printf '%s' "$out" | grep -q 'pnpm add -g @d3i-infra/adg@latest' || fail "installed 3.9.0 should advise the upgrade command"
+
+out=$(run_with_version "4.0.0-rc1")
+printf '%s' "$out" | grep -q '"systemMessage"' || fail "installed 4.0.0-rc1 (prerelease of the shipped version) should produce the JSON envelope"
+printf '%s' "$out" | grep -q 'pnpm add -g @d3i-infra/adg@latest' || fail "installed 4.0.0-rc1 should advise the upgrade command"
+
+out=$(run_with_version "4.0.0")
+printf '%s' "$out" | grep -q '"systemMessage"' && fail "installed 4.0.0 matches what the plugin ships for; no upgrade advice expected"
+
 echo "ok"

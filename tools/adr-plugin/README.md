@@ -3,7 +3,7 @@
 This is a [Claude Code](https://code.claude.com) plugin that ships *with* `adg` so its
 guidance tracks the CLI in lockstep — the references in `skills/*/references/` are updated
 in the same change that updates the CLI, which is why this repo is the plugin's canonical
-home. The `d3i-skills` marketplace **lists** this plugin via a `git-subdir` source pinned to
+home. The `d3i-claude-skills` marketplace **lists** this plugin via a `git-subdir` source pinned to
 `main` — a reference to this repo, not a copy — so there is one source of truth and nothing
 to sync.
 
@@ -41,7 +41,7 @@ Either add this repo as a marketplace directly:
 ```
 
 …or install via a marketplace that references it with a `git-subdir` source pointing at
-`tools/adr-plugin` (this is how the `d3i-skills` marketplace lists it, pinned to `main`).
+`tools/adr-plugin` (this is how the `d3i-claude-skills` marketplace lists it, pinned to `main`).
 
 The skills and the bundled hooks call the `adg` CLI as a bare command. `adg` is a **system
 dependency**: install it once with your package manager (`pnpm add -g @d3i-infra/adg`, or

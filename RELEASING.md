@@ -10,7 +10,7 @@ One tag `vX.Y.Z` simultaneously fixes:
 1. the GitHub Release assets — the raw binaries, the tar.gz archives, and `checksums.txt` (built by `.goreleaser.yaml`);
 2. the CLI's `adg --version` (the tag, minus the `v`, injected via `-ldflags`);
 3. `tools/adr-plugin/.claude-plugin/plugin.json` `version` (**must** equal the tag minus `v`);
-4. what consumers receive — the d3i-skills marketplace pins the plugin at `ref: main`, so
+4. what consumers receive — the d3i-claude-skills marketplace pins the plugin at `ref: main`, so
    **merging to `main` is the rollout** (there is no tag-pinned ref to bump separately).
 
 The plugin's SessionStart hook compares the installed `adg --version` to `plugin.json` and tells
@@ -69,7 +69,7 @@ publish need the failed packages published by hand with `npm publish dist/npm/<p
 rendering without publishing: `goreleaser release --snapshot --clean --skip=publish && node
 scripts/npm/build.mjs`; tests: `node --test scripts/npm/build.test.mjs`.
 
-## d3i-skills marketplace entry
+## d3i-claude-skills marketplace entry
 
 ```json
 { "name": "write-adr", "source": "git-subdir",
