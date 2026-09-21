@@ -25,7 +25,8 @@ mismatch is live the instant it merges, so the tag and Release must land immedia
 1. In your change PR, bump `tools/adr-plugin/.claude-plugin/plugin.json` `version` → `X.Y.Z`, then
    merge to `main`. Because the marketplace tracks `main`, the merge is the rollout.
 2. **Immediately** tag the merge commit and push: `git tag vX.Y.Z && git push origin vX.Y.Z`. Don't
-   leave an unreleased version on `main` — it 404s installs
+   leave an unreleased version on `main` — every governed session is told to upgrade to a version no
+   package manager can serve
    ([ADR-0013](docs/decisions/0013-the-marketplace-tracks-main-so-a-plugin-json-version-bump-must-ship-with-its-tag-and-release.md)).
 3. The `release` workflow runs goreleaser and publishes the GitHub Release with the six
    `adg_<os>_<arch>` assets + `checksums.txt`.

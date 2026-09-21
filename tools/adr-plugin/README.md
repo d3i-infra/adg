@@ -3,8 +3,8 @@
 This is a [Claude Code](https://code.claude.com) plugin that ships *with* `adg` so its
 guidance tracks the CLI in lockstep — the references in `skills/*/references/` are updated
 in the same change that updates the CLI, which is why this repo is the plugin's canonical
-home. The `d3i-skills` marketplace **lists** this plugin via a `git-subdir` source pinned to a
-release tag — a reference to this repo, not a copy — so there is one source of truth and nothing
+home. The `d3i-skills` marketplace **lists** this plugin via a `git-subdir` source pinned to
+`main` — a reference to this repo, not a copy — so there is one source of truth and nothing
 to sync.
 
 It ships three skills — a *gateway* that routes any ADR task, one for *authoring*, and one for
@@ -41,7 +41,7 @@ Either add this repo as a marketplace directly:
 ```
 
 …or install via a marketplace that references it with a `git-subdir` source pointing at
-`tools/adr-plugin` (this is how the `d3i-skills` marketplace lists it, pinned to a release tag).
+`tools/adr-plugin` (this is how the `d3i-skills` marketplace lists it, pinned to `main`).
 
 The skills and the bundled hooks call the `adg` CLI as a bare command. `adg` is a **system
 dependency**: install it once with your package manager (`pnpm add -g @d3i-infra/adg`, or
@@ -65,7 +65,7 @@ users). Every hook routes off the same compiled brief and needs system `adg` on 
   it **greets** every session — announcing that the write-adr governance is active and its entry points,
   *even when the lean model is empty* (a read-only or mid-migration session meets no other hook) — and
   **version-checks**: when the system `adg` is missing or older than the plugin, it shows the user the
-  `install.sh` one-liner directly (a `systemMessage`) and tells the agent the hooks are idle. Silent in
+  package-manager install commands directly (a `systemMessage`) and tells the agent the hooks are idle. Silent in
   ungoverned repos.
 - **UserPromptSubmit** (fires on every prompt; the script keyword-filters) → `bin/adr-router.sh`. When a
   prompt mentions ADRs / `docs/decisions` / `adg`, injects a pointer telling the agent to do ADR work
