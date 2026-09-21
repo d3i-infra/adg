@@ -24,21 +24,30 @@ builds:
       - -s -w -X github.com/d3i-infra/adg/cmd.version={{ .Version }}
 
 archives:
+  # 1. Raw binaries — the CONTRACT install.sh and the CI consumers depend on.
+  #    Names: adg_<os>_<arch>[.exe]. Do not rename.
   - id: adg
-    # Raw binaries, not tar/zip: the downstream consumers are a bash wrapper and a
-    # curl|sh installer whose whole job is "fetch one file, verify, chmod, exec".
-    # Avoiding tar/unzip keeps them dependency-free (matters on Windows/Git-Bash).
+    ids: [adg]
     formats: [binary]
     name_template: "adg_{{ .Os }}_{{ .Arch }}"
+  # 2. tar.gz archives: the AUR PKGBUILD extracts these. Same build, different
+  #    container. (npm packages are assembled from the build output directly by
+  #    scripts/npm/build.mjs, not from these.)
+  - id: adg-archive
+    ids: [adg]
+    formats: [tar.gz]
+    name_template: "adg_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
 
 checksum:
   name_template: checksums.txt
   algorithm: sha256
 
 release:
-  github:
-    owner: daniellemccool
-    name: ad-guidance-tool
+  # No github.owner/name: goreleaser infers the repository from the workflow's own
+  # remote, so this config publishes correctly both before and after the move to
+  # d3i-infra/adg.
   draft: false
   # Tags like v1.1.0-rc1 / v1.0.1-dev are published as prereleases automatically.
   prerelease: auto
