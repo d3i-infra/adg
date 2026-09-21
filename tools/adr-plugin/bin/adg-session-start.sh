@@ -27,7 +27,9 @@ NOTE: the commit-compliance judge and record-review agent hooks need \`adg\` all
 fi
 
 # Version check.
-install='curl -fsSL https://raw.githubusercontent.com/daniellemccool/ad-guidance-tool/main/install.sh | sh'
+# Install advice, one line per platform. The plugin no longer downloads adg itself:
+# adg is a system dependency installed through a package manager (see the repo README).
+install='pnpm add -g @d3i-infra/adg (or: npm install -g @d3i-infra/adg) · Arch: yay -S adg-bin · Go: go install github.com/d3i-infra/adg@latest · no package manager: curl -fsSL https://raw.githubusercontent.com/d3i-infra/adg/main/install.sh | sh'
 root="${CLAUDE_PLUGIN_ROOT:-}"
 need=""
 if [ -n "$root" ] && [ -f "$root/.claude-plugin/plugin.json" ]; then
@@ -37,15 +39,17 @@ have=$(adg --version 2>/dev/null | awk '{print $NF}') || have=""
 
 msg=""
 if [ -z "$have" ]; then
-    msg="The write-adr plugin needs the adg CLI, which is not installed — this repo's governance hooks will keep erroring until it is. Install it, then start a new session (or /clear): $install"
+    msg="The write-adr plugin needs the adg CLI, which is not installed — this repo's governance hooks will keep erroring until it is. Install it with your package manager, then start a new session (or /clear). $install"
     ctx="$ctx
-NOTE: the \`adg\` CLI these hooks depend on is not on PATH — the governance hooks will keep erroring visibly (\`adg: command not found\`) until it is installed, and nothing is being checked in the meantime. The user has been shown the install one-liner; if they ask about the hook errors, point them at it: \`$install\` (fish: keep \`| sh\`; no VAR=value prefix)."
+NOTE: the \`adg\` CLI these hooks depend on is not on PATH — the governance hooks will keep erroring visibly (\`adg: command not found\`) until it is installed, and nothing is being checked in the meantime. The user has been shown the install commands; if they ask about the hook errors, point them at the line for their platform: $install"
 elif [ -n "$need" ] && [ "$have" != "$need" ]; then
-    older=$(printf '%s\n%s\n' "$have" "$need" | sort -V | head -1)
-    if [ "$older" = "$have" ]; then
-        msg="adg is v$have but the write-adr plugin ships for v$need — the governance hooks misbehave on the old version. Update: $install"
+    # Compare version cores; a prerelease (4.0.0-rc1) counts as older than its release (4.0.0).
+    have_core=${have%%-*}; need_core=${need%%-*}
+    older=$(printf '%s\n%s\n' "$have_core" "$need_core" | sort -V | head -1)
+    if [ "$older" = "$have_core" ] && { [ "$have_core" != "$need_core" ] || [ "$have" != "$have_core" ]; }; then
+        msg="adg is v$have but the write-adr plugin ships for v$need — the governance hooks misbehave on the old version. Upgrade with your package manager (pnpm add -g @d3i-infra/adg@latest · yay -Syu · go install github.com/d3i-infra/adg@latest)."
         ctx="$ctx
-NOTE: the system \`adg\` is v$have but this plugin ships for v$need — the governance hooks misbehave on the old version. The user has been shown the update one-liner: \`$install\` (fish: keep \`| sh\`; no VAR=value prefix)."
+NOTE: the system \`adg\` is v$have but this plugin ships for v$need — the governance hooks misbehave on the old version. The user has been shown the upgrade commands (pnpm add -g @d3i-infra/adg@latest · yay -Syu · go install github.com/d3i-infra/adg@latest)."
     fi
 fi
 

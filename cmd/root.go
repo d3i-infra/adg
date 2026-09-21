@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	printer "adg/internal/adapter/printer"
+	printer "github.com/d3i-infra/adg/internal/adapter/printer"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -17,7 +17,7 @@ var rootCmd = &cobra.Command{
 }
 
 // version is the adg version string. It defaults to "dev" for source builds and
-// is overridden at release time via -ldflags "-X adg/cmd.version=<tag>" (wired by
+// is overridden at release time via -ldflags "-X github.com/d3i-infra/adg/cmd.version=<tag>" (wired by
 // .goreleaser.yaml). init() reads it into rootCmd.Version, so the value injected
 // at link time is what `adg --version` prints.
 var version = "dev"

@@ -1,9 +1,9 @@
 package lean
 
 import (
-	"adg/internal/domain/decision/madr"
 	"encoding/json"
 	"fmt"
+	"github.com/d3i-infra/adg/internal/domain/decision/madr"
 	"strings"
 	"testing"
 	"unicode/utf8"

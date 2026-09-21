@@ -31,7 +31,7 @@ matching skill below before acting.
 `adg` is on `PATH`. Core commands: `adg lean brief` (route paths → governing ADRs), `adg lean
 new` (author), `adg lean index` (validate + regenerate the README), `adg lean review` (rubric
 review), `adg lean check` (executable checks). If an `adg` command errors or `adg` is missing,
-surface it and prompt the user to run `install.sh` — do not fall back to editing records by
+surface it and prompt the user to install `adg` with their package manager (the session-start hook prints the command) — do not fall back to editing records by
 hand.
 
 ## When the model looks empty

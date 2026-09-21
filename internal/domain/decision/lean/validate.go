@@ -1,8 +1,8 @@
 package lean
 
 import (
-	"adg/internal/domain/decision/madr"
 	"fmt"
+	"github.com/d3i-infra/adg/internal/domain/decision/madr"
 	"regexp"
 	"slices"
 	"strings"

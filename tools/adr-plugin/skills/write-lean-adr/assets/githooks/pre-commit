@@ -14,7 +14,7 @@ MODEL="${ADR_MODEL:-docs/decisions}"
 
 [ -d "$MODEL" ] || exit 0
 if ! command -v adg >/dev/null 2>&1; then
-    echo "pre-commit: adg not installed, skipping ADR checks (see install.sh)" >&2
+    echo "pre-commit: adg not installed, skipping ADR checks (install adg: see the adg README)" >&2
     exit 0
 fi
 

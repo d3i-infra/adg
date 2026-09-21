@@ -13,42 +13,41 @@ Lean is the sole user-facing format
 ([ADR-0016](./docs/decisions/0016-lean-is-the-sole-user-facing-adg-adr-format-madr-is-shared-parsing-plumbing.md));
 the MADR authoring lifecycle was retired in v2.0.0.
 
-This is a fork of [adr/ad-guidance-tool](https://github.com/adr/ad-guidance-tool) — see
-[Fork rationale](#fork-rationale) for what differs.
-
-## Fork rationale
-
-The upstream tool managed a single custom-Markdown format with HTML anchor tags and a sidecar
-`index.yaml`. This fork made two moves:
-
-1. **MADR on disk, no index** *(historical)*. Files became ordinary MADR records round-tripping
-   through `parse → render`, with metadata in YAML frontmatter and the ADR files as the only source
-   of truth (`index.yaml` and `adg rebuild` were dropped). Those departures are recorded in
-   [`docs/fork-design/`](./docs/fork-design/). The MADR *authoring lifecycle* has since been retired;
-   its frontmatter/file-split parsing survives as the plumbing under lean records.
-
-2. **From ADR management to architecture-context compilation.** The *lean* format optimizes for
-   agent consumption: small Decision/Guidance records with glob-based routing that `adg` compiles into a
-   per-change brief and injects via a Claude Code hook. The tool's own current decisions live in
-   [`docs/decisions/`](./docs/decisions/) — themselves lean records.
+`adg` began as a derivative of the [adr/ad-guidance-tool](https://github.com/adr/ad-guidance-tool) CLI
+and has since been rebuilt around lean records and compiled briefs — see
+[Acknowledgements](#acknowledgements).
 
 ## Install
 
-**Prebuilt binary (recommended).** Install the latest release into `~/.local/bin` — no Go toolchain:
+**Package manager (recommended).** One command, then `adg` is on your `PATH` and upgrades with
+everything else:
+
+| Platform | Install | Upgrade |
+|---|---|---|
+| macOS, Linux, Windows (Node + pnpm) | `pnpm add -g @d3i-infra/adg` (or `npm install -g @d3i-infra/adg`) | `pnpm add -g @d3i-infra/adg@latest` |
+| Arch Linux (AUR) | `yay -S adg-bin` (or `paru -S adg-bin`) | with your usual `-Syu` |
+| Any Go toolchain | `go install github.com/d3i-infra/adg@latest` | same command |
+
+A pnpm project can also pin `adg` for the whole team with `pnpm add -D -E @d3i-infra/adg` and call
+it as `pnpm exec adg …` (this is how the governed repos' CI runs it). The Claude Code hooks call
+`adg` bare, outside `node_modules/.bin`, so the global install above is still needed on each
+developer machine.
+
+**Prebuilt binary (no package manager).** Installs the latest release into `~/.local/bin`:
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/daniellemccool/ad-guidance-tool/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/d3i-infra/adg/main/install.sh | sh
 ```
 
-Pin a version with `ADG_VERSION=v3.0.0` or change the location with `ADG_INSTALL_DIR`. Binaries for
+Pin a version with `ADG_VERSION=v4.0.0` or change the location with `ADG_INSTALL_DIR`. Binaries for
 macOS/Linux/Windows (amd64/arm64) are on the
-[Releases](https://github.com/daniellemccool/ad-guidance-tool/releases) page.
+[Releases](https://github.com/d3i-infra/adg/releases) page.
 
 **From source** (needs Go 1.24+):
 
 ```sh
-git clone https://github.com/daniellemccool/ad-guidance-tool.git
-cd ad-guidance-tool
+git clone https://github.com/d3i-infra/adg.git
+cd adg
 go build           # produces ./adg
 # or:
 go install ./...   # installs to $GOBIN
@@ -146,14 +145,14 @@ lockstep. It provides three skills — one for *authoring*, one for
   (the hook and the brief do the real work).
 
 ```
-/plugin marketplace add daniellemccool/ad-guidance-tool
+/plugin marketplace add d3i-infra/adg
 ```
 
-The skills call `adg`, and it **rides along**: the plugin ships a `bin/adg` wrapper that Claude Code
-puts on `PATH` while the plugin is enabled, fetching the prebuilt CLI that matches the plugin's version
-on first use (no Go toolchain needed). The `d3i-skills` marketplace **lists** this plugin via a
-`git-subdir` source pinned to a release tag — a reference to this repo, which stays the canonical
-source. (Governed-repo hooks run outside the plugin's PATH and need a system `adg` — see [Install](#install).)
+The skills and hooks call `adg` as a bare command, so **install it first** (see [Install](#install)); the
+plugin does not bundle or download it. The `d3i-claude-skills` marketplace **lists** this plugin via a
+`git-subdir` source pinned to `main` — a reference to this repo, which stays the canonical source. At
+session start the plugin checks that the installed `adg` is not older than the version it ships for
+and prints the install or upgrade command for your platform when it is missing or older.
 
 ---
 
@@ -197,8 +196,7 @@ Settings are advisory and fail-open, and they never change what a compiled brief
 `adg` governs itself. Its current architectural decisions are lean records in
 [`docs/decisions/`](./docs/decisions/) (the routing kernel, the canonical renderer, single-format
 consolidation, enforcement tiers, round-trip stability, relationship types, stdout/stderr, no-index, …).
-The earlier MADR-fork decisions are in [`docs/fork-design/`](./docs/fork-design/), and a worked lean
-example model is in [`docs/lean-example/`](./docs/lean-example/).
+A worked lean example model is in [`docs/lean-example/`](./docs/lean-example/).
 
 ## Contributing
 
@@ -211,14 +209,19 @@ Business logic lives in the domain (`internal/domain/`); commands are thin cobra
    to stderr.
 3. Cover with unit tests, and run `go test ./...` before pushing.
 
-## References
+## Acknowledgements
 
-- [MADR](https://adr.github.io/madr/) — the durable ADR format whose frontmatter/file conventions this
-  fork's parsing plumbing descends from.
-- Upstream tool: [adr/ad-guidance-tool](https://github.com/adr/ad-guidance-tool).
-- Original theses behind the upstream tool:
-  - [Concept Alternatives for the Management of Architectural Decisions in Clean Architectures](https://eprints.ost.ch/id/eprint/1280/1/MSECS-FS24-CleanArchitectureDecisionsConceptsRS.pdf)
-  - [A Command-Line Tool for Managing Recurring Architectural Decisions](https://eprints.ost.ch/id/eprint/1287/1/PA2-Raphael-Schellander.pdf)
+`adg` is derived from [adr/ad-guidance-tool](https://github.com/adr/ad-guidance-tool) by Raphael
+Schellander and collaborators at the [Eastern Switzerland University of Applied Sciences](https://www.ost.ch/en/),
+released under the Apache License 2.0. Their CLI skeleton (cobra root command, the
+`internal/adapter/command` layout) and the idea of a curated *model* of recurring architectural
+decisions formed the basis of this tool; the record format, routing, brief compilation, hooks, and
+plugin were built here. The original theses:
+
+- [Concept Alternatives for the Management of Architectural Decisions in Clean Architectures](https://eprints.ost.ch/id/eprint/1280/1/MSECS-FS24-CleanArchitectureDecisionsConceptsRS.pdf)
+- [A Command-Line Tool for Managing Recurring Architectural Decisions](https://eprints.ost.ch/id/eprint/1287/1/PA2-Raphael-Schellander.pdf)
+
+The lean record's frontmatter and file conventions descend from [MADR](https://adr.github.io/madr/).
 
 ## License
 

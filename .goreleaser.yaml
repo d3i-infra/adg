@@ -1,8 +1,7 @@
 # goreleaser v2 — builds the adg CLI and publishes prebuilt binaries to GitHub
 # Releases on every `v*` tag (driven by .github/workflows/release.yml).
 #
-# The write-adr plugin's bin/adg wrapper and install.sh download these assets, so
-# the resulting asset names are a CONTRACT they depend on:
+# install.sh downloads these assets, so the resulting asset names are a CONTRACT it depends on:
 #   adg_<os>_<arch>      (linux/darwin)   e.g. adg_darwin_arm64
 #   adg_<os>_<arch>.exe  (windows)        e.g. adg_windows_amd64.exe
 #   checksums.txt        (sha256 of every asset)
@@ -19,26 +18,53 @@ builds:
     goos: [linux, darwin, windows]
     goarch: [amd64, arm64]
     ldflags:
-      # Inject the tag (without the leading v) as adg/cmd.version so `adg --version`
-      # matches plugin.json's version — the lock the wrapper relies on.
-      - -s -w -X adg/cmd.version={{ .Version }}
+      # Inject the tag (without the leading v) as github.com/d3i-infra/adg/cmd.version so `adg --version`
+      # matches plugin.json's version — the lock the session-start check relies on.
+      - -s -w -X github.com/d3i-infra/adg/cmd.version={{ .Version }}
 
 archives:
+  # 1. Raw binaries — the CONTRACT install.sh and the CI consumers depend on.
+  #    Names: adg_<os>_<arch>[.exe]. Do not rename.
   - id: adg
-    # Raw binaries, not tar/zip: the downstream consumers are a bash wrapper and a
-    # curl|sh installer whose whole job is "fetch one file, verify, chmod, exec".
-    # Avoiding tar/unzip keeps them dependency-free (matters on Windows/Git-Bash).
+    ids: [adg]
     formats: [binary]
     name_template: "adg_{{ .Os }}_{{ .Arch }}"
+  # 2. tar.gz archives: the AUR PKGBUILD extracts these. Same build, different
+  #    container. (npm packages are assembled from the build output directly by
+  #    scripts/npm/build.mjs, not from these.)
+  - id: adg-archive
+    ids: [adg]
+    formats: [tar.gz]
+    name_template: "adg_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
 
 checksum:
   name_template: checksums.txt
   algorithm: sha256
 
 release:
-  github:
-    owner: daniellemccool
-    name: ad-guidance-tool
+  # No github.owner/name: goreleaser infers the repository from the workflow's own
+  # remote, so this config publishes correctly both before and after the move to
+  # d3i-infra/adg.
   draft: false
   # Tags like v1.1.0-rc1 / v1.0.1-dev are published as prereleases automatically.
   prerelease: auto
+
+aurs:
+  - name: adg-bin
+    ids: [adg-archive]
+    homepage: "https://github.com/d3i-infra/adg"
+    description: "Compile Architectural Decision Records into per-change architecture briefs for coding agents"
+    maintainers:
+      - "Danielle McCool <d.m.mccool@uu.nl>"
+    license: "Apache-2.0"
+    private_key: "{{ .Env.AUR_SSH_PRIVATE_KEY }}"
+    git_url: "ssh://aur@aur.archlinux.org/adg-bin.git"
+    # Prerelease tags never reach the AUR: pacman ranks 4.0.0_rc1 above 4.0.0, so an
+    # rc would stick anyone who installed it. Same policy as the Release and npm.
+    skip_upload: auto
+    commit_msg_template: "adg {{ .Tag }}"
+    package: |-
+      install -Dm755 "./adg" "${pkgdir}/usr/bin/adg"
+      install -Dm644 "./LICENSE" "${pkgdir}/usr/share/licenses/adg-bin/LICENSE"

@@ -7,17 +7,17 @@ They ship as **one version-locked bundle**, and a single git tag drives everythi
 
 One tag `vX.Y.Z` simultaneously fixes:
 
-1. the GitHub Release assets — `adg_<os>_<arch>[.exe]` + `checksums.txt` (built by `.goreleaser.yaml`);
+1. the GitHub Release assets — the raw binaries, the tar.gz archives, and `checksums.txt` (built by `.goreleaser.yaml`);
 2. the CLI's `adg --version` (the tag, minus the `v`, injected via `-ldflags`);
 3. `tools/adr-plugin/.claude-plugin/plugin.json` `version` (**must** equal the tag minus `v`);
-4. what consumers receive — the d3i-skills marketplace pins the plugin at `ref: main`, so
+4. what consumers receive — the d3i-claude-skills marketplace pins the plugin at `ref: main`, so
    **merging to `main` is the rollout** (there is no tag-pinned ref to bump separately).
 
-The plugin's `bin/adg` wrapper reads its version out of `plugin.json` and downloads
-`adg vX.Y.Z` from the Release — so **`plugin.json` version == release tag minus `v`** is a hard
-requirement, not a convention. Mismatch ⇒ the wrapper's first download 404s — and because the
-marketplace tracks `main`, that mismatch is live to everyone the instant it merges, so the tag and
-Release must land immediately after the bump
+The plugin's SessionStart hook compares the installed `adg --version` to `plugin.json` and tells
+every consumer to upgrade when they differ — so **`plugin.json` version == release tag minus `v`**
+is a hard requirement, not a convention. Mismatch ⇒ every session in every governed repo is told
+to upgrade to a version no package manager has, and because the marketplace tracks `main`, that
+mismatch is live the instant it merges, so the tag and Release must land immediately after the bump
 ([ADR-0013](docs/decisions/0013-the-marketplace-tracks-main-so-a-plugin-json-version-bump-must-ship-with-its-tag-and-release.md)).
 
 ## Cutting a release
@@ -25,28 +25,55 @@ Release must land immediately after the bump
 1. In your change PR, bump `tools/adr-plugin/.claude-plugin/plugin.json` `version` → `X.Y.Z`, then
    merge to `main`. Because the marketplace tracks `main`, the merge is the rollout.
 2. **Immediately** tag the merge commit and push: `git tag vX.Y.Z && git push origin vX.Y.Z`. Don't
-   leave an unreleased version on `main` — it 404s installs
+   leave an unreleased version on `main` — every governed session is told to upgrade to a version no
+   package manager can serve
    ([ADR-0013](docs/decisions/0013-the-marketplace-tracks-main-so-a-plugin-json-version-bump-must-ship-with-its-tag-and-release.md)).
-3. The `release` workflow runs goreleaser and publishes the GitHub Release with the six
-   `adg_<os>_<arch>` assets + `checksums.txt`.
-4. Verify: the Release page lists all assets, and a downloaded asset prints `X.Y.Z`:
-   `./adg_linux_amd64 --version`.
+3. The `release` workflow runs goreleaser and npm, publishing all four outputs: the GitHub
+   Release (the six raw `adg_<os>_<arch>[.exe]` binaries, six `adg_<version>_<os>_<arch>.tar.gz`
+   archives, and `checksums.txt` — 13 assets); the AUR package `adg-bin` (skipped for prerelease
+   tags); and the seven npm packages (`@d3i-infra/adg` plus six platform packages, dist-tag `next`
+   for prereleases, `latest` otherwise).
+4. Verify: the Release page lists all 13 assets, and a downloaded asset prints `X.Y.Z`:
+   `./adg_linux_amd64 --version`; `npm view @d3i-infra/adg dist-tags --json` shows the expected
+   tag; and `curl -fsS "https://aur.archlinux.org/rpc/v5/info?arg[]=adg-bin" | python3 -c
+   'import json,sys;print(json.load(sys.stdin)["results"][0]["Version"])'` prints `X.Y.Z` (skip
+   for a prerelease tag, which the AUR never receives).
 
 There is no ref-bump step: the marketplace's `write-adr` entry pins `ref: main`, so consumers get
 `X.Y.Z` the moment step 1 merges — which is exactly why step 2 must follow immediately.
 
 ## How consumers receive it
 
-- **Plugin skills:** the plugin's `bin/adg` is auto-added to PATH; on first call it lazily downloads
-  the matching `adg vX.Y.Z` into `${CLAUDE_PLUGIN_DATA}` (cached, persists across updates).
-- **Governed-repo hooks** (PreToolUse/Stop, the git pre-commit hook, the `adr` wrapper): these run
-  outside the plugin's PATH and need a system `adg` — install with `install.sh` (see README).
+- **Everyone:** `adg` is installed through a package manager (see "Packagers" below) or `install.sh`.
+  The plugin ships no binary. Its skills, its bundled hooks, the copied-out git pre-commit hook, and
+  CI all call the same system `adg`.
 
-## d3i-skills marketplace entry
+## Packagers
+
+The release workflow publishes two package-manager routes from the same tag; the raw
+`adg_<os>_<arch>` assets stay for `install.sh`:
+
+| Route | What is published | Secret |
+|---|---|---|
+| npm | `@d3i-infra/adg` (launcher) + `@d3i-infra/adg-{darwin,linux,win32}-{x64,arm64}` (one binary each), assembled by `scripts/npm/build.mjs` from goreleaser's build output | none after bootstrap: trusted publishing (OIDC) configured per package on npmjs.com; `NPM_TOKEN` (a one-day granular token) only for the very first publish, then deleted |
+| AUR | `adg-bin`, a PKGBUILD generated by goreleaser from the tar.gz archives | `AUR_SSH_PRIVATE_KEY` |
+
+All seven npm packages carry the tag's version; `@d3i-infra/adg` pins the six platform packages to
+that exact version through `optionalDependencies`, and npm installs only the one whose `os`/`cpu`
+match. Prerelease tags (`v4.0.1-rc1`) publish under the npm dist-tag `next`, never `latest`. The
+release repo itself is inferred from the workflow's remote, never configured. If a packager step
+fails, the GitHub Release has already been published; fix the cause (an npm trusted-publisher entry
+that does not match owner, repo, or workflow filename; a missing AUR key) and re-run the workflow
+from the Actions tab (npm refuses to republish an existing version, so re-runs after a partial npm
+publish need the failed packages published by hand with `npm publish dist/npm/<pkg>`). Local
+rendering without publishing: `goreleaser release --snapshot --clean --skip=publish && node
+scripts/npm/build.mjs`; tests: `node --test scripts/npm/build.test.mjs`.
+
+## d3i-claude-skills marketplace entry
 
 ```json
 { "name": "write-adr", "source": "git-subdir",
-  "url": "daniellemccool/ad-guidance-tool", "path": "tools/adr-plugin", "ref": "main" }
+  "url": "d3i-infra/adg", "path": "tools/adr-plugin", "ref": "main" }
 ```
 
 The `ref` is pinned to `main` (not a version tag) on purpose: the plugin tracks the latest release
@@ -56,5 +83,5 @@ bump on `main` without an immediate tag + Release breaks installs
 
 ## Local verification (no real release)
 
-- Version wiring: `go build -ldflags "-X adg/cmd.version=v9.9.9-test" -o /tmp/adg . && /tmp/adg --version`
+- Version wiring: `go build -ldflags "-X github.com/d3i-infra/adg/cmd.version=v9.9.9-test" -o /tmp/adg . && /tmp/adg --version`
 - Release config: `goreleaser check` then `goreleaser release --snapshot --clean` (inspect `dist/`).

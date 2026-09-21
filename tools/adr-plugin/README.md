@@ -3,8 +3,8 @@
 This is a [Claude Code](https://code.claude.com) plugin that ships *with* `adg` so its
 guidance tracks the CLI in lockstep — the references in `skills/*/references/` are updated
 in the same change that updates the CLI, which is why this repo is the plugin's canonical
-home. The `d3i-skills` marketplace **lists** this plugin via a `git-subdir` source pinned to a
-release tag — a reference to this repo, not a copy — so there is one source of truth and nothing
+home. The `d3i-claude-skills` marketplace **lists** this plugin via a `git-subdir` source pinned to
+`main` — a reference to this repo, not a copy — so there is one source of truth and nothing
 to sync.
 
 It ships three skills — a *gateway* that routes any ADR task, one for *authoring*, and one for
@@ -37,28 +37,21 @@ tools/adr-plugin/
 Either add this repo as a marketplace directly:
 
 ```
-/plugin marketplace add daniellemccool/ad-guidance-tool
+/plugin marketplace add d3i-infra/adg
 ```
 
 …or install via a marketplace that references it with a `git-subdir` source pointing at
-`tools/adr-plugin` (this is how the `d3i-skills` marketplace lists it, pinned to a release tag).
+`tools/adr-plugin` (this is how the `d3i-claude-skills` marketplace lists it, pinned to `main`).
 
-The skills call the `adg` CLI, and it **rides along**: the plugin ships a `bin/adg` wrapper that
-Claude Code puts on `PATH` while the plugin is enabled, and on first use it downloads the prebuilt
-`adg` matching the plugin's version — no Go toolchain, no manual install.
-
-A **system `adg` on `PATH`** is still needed for any `adg` invocation that runs *outside* the skills'
-execution context: the copied-out git hook, governance hooks a target repo wires into its own
-settings, and — as of v1.3.0 — **this plugin's own bundled hooks** (`hooks/hooks.json`, below).
-When it is missing, the bundled hooks **fail loudly** (an `adg: command not found` hook error at
-session start and on tool calls) — deliberate, so the governance never degrades silently — and the
-SessionStart hook turns that noise into instructions: it shows the user this install one-liner
-directly (as a `systemMessage`) and briefs the agent to relay it. Install it once with the
-prebuilt binary:
-
-```
-curl -fsSL https://raw.githubusercontent.com/daniellemccool/ad-guidance-tool/main/install.sh | sh
-```
+The skills and the bundled hooks call the `adg` CLI as a bare command. `adg` is a **system
+dependency**: install it once with your package manager (`pnpm add -g @d3i-infra/adg`, or
+`yay -S adg-bin` on Arch, or `go install github.com/d3i-infra/adg@latest`; the repo README has the
+full table). When it is missing, the
+bundled hooks **fail loudly** (an `adg: command not found` hook error at session start and on tool
+calls) — deliberate, so the governance never degrades silently — and the SessionStart hook turns that
+noise into instructions: it shows the user the install commands directly (as a `systemMessage`) and
+briefs the agent to relay them. When the installed `adg` is older than the version the plugin ships
+for, the same hook prints the upgrade command.
 
 ## Bundled hooks
 
@@ -72,7 +65,7 @@ users). Every hook routes off the same compiled brief and needs system `adg` on 
   it **greets** every session — announcing that the write-adr governance is active and its entry points,
   *even when the lean model is empty* (a read-only or mid-migration session meets no other hook) — and
   **version-checks**: when the system `adg` is missing or older than the plugin, it shows the user the
-  `install.sh` one-liner directly (a `systemMessage`) and tells the agent the hooks are idle. Silent in
+  package-manager install commands directly (a `systemMessage`) and tells the agent the hooks are idle. Silent in
   ungoverned repos.
 - **UserPromptSubmit** (fires on every prompt; the script keyword-filters) → `bin/adr-router.sh`. When a
   prompt mentions ADRs / `docs/decisions` / `adg`, injects a pointer telling the agent to do ADR work
